@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "file": "cyberteam_prompts_part4.json",
+    "version": "1.0",
+    "description": "Technical operations: SPA and CLS",
+    "operations_included": ["spa_extract_technique_span", "cls_attack_vector"]
+  },
+  
+  "prompt_templates": {
+    
+    "spa_extract_technique_span": {
+      "operation_name": "Attack Technique Span Localization",
+      "description": "Extract precise text spans describing attack techniques and methods",
+      "system_prompt": "You are a cybersecurity technique analysis specialist with expertise in identifying and extracting precise descriptions of attack methods from threat reports. You excel at localizing specific text spans that describe how attacks are executed and mapping them to MITRE ATT&CK framework.",
+      
+      "user_template": "**SPAN EXTRACTION MISSION:** Identify and extract precise text spans that describe attack techniques, methods, and procedures used by threat actors.\n\n**TECHNIQUE CATEGORIES TO IDENTIFY:**\n\n**INITIAL ACCESS (TA0001):**\n- T1566: Phishing (email, spear-phishing, watering holes)\n- T1190: Exploit Public-Facing Application\n- T1133: External Remote Services\n- T1195: Supply Chain Compromise\n- T1078: Valid Accounts\n\n**EXECUTION (TA0002):**\n- T1059: Command and Scripting Interpreter (PowerShell, CMD, WScript)\n- T1053: Scheduled Task/Job\n- T1106: Native API\n- T1204: User Execution\n\n**PERSISTENCE (TA0003):**\n- T1547: Boot or Logon Autostart Execution\n- T1053: Scheduled Task/Job\n- T1546: Event Triggered Execution\n- T1574: Hijack Execution Flow\n\n**PRIVILEGE ESCALATION (TA0004):**\n- T1068: Exploitation for Privilege Escalation\n- T1055: Process Injection\n- T1134: Access Token Manipulation\n- T1548: Abuse Elevation Control Mechanism\n\n**DEFENSE EVASION (TA0005):**\n- T1027: Obfuscated Files or Information\n- T1055: Process Injection\n- T1070: Indicator Removal on Host\n- T1218: Signed Binary Proxy Execution\n\n**CREDENTIAL ACCESS (TA0006):**\n- T1003: OS Credential Dumping (LSASS, SAM)\n- T1056: Input Capture (Keylogging)\n- T1110: Brute Force\n- T1552: Unsecured Credentials\n\n**DISCOVERY (TA0007):**\n- T1083: File and Directory Discovery\n- T1057: Process Discovery\n- T1018: Remote System Discovery\n- T1082: System Information Discovery\n\n**LATERAL MOVEMENT (TA0008):**\n- T1021: Remote Services (RDP, SMB, WinRM)\n- T1105: Ingress Tool Transfer\n- T1570: Lateral Tool Transfer\n\n**COLLECTION (TA0009):**\n- T1005: Data from Local System\n- T1039: Data from Network Shared Drive\n- T1056: Input Capture\n- T1113: Screen Capture\n\n**COMMAND AND CONTROL (TA0011):**\n- T1071: Application Layer Protocol (HTTP, DNS)\n- T1572: Protocol Tunneling\n- T1573: Encrypted Channel\n- T1090: Proxy\n\n**EXFILTRATION (TA0010):**\n- T1041: Exfiltration Over C2 Channel\n- T1048: Exfiltration Over Alternative Protocol\n- T1567: Exfiltration Over Web Service\n\n**EXTRACTION CRITERIA:**\n- **COMPLETENESS:** Extract entire sentences or phrases that describe techniques\n- **CONTEXT:** Include sufficient context to understand the method\n- **PRECISION:** Provide exact character positions for each span\n- **CLASSIFICATION:** Map to MITRE ATT&CK technique IDs\n- **CONFIDENCE:** Score based on description clarity and specificity\n\n**SPAN QUALITY REQUIREMENTS:**\n- Minimum 10 characters, maximum 300 characters per span\n- Must contain actionable technical detail\n- Should describe HOW the technique was executed\n- Include tools, methods, or specific procedures\n- Avoid generic statements without technical detail\n\n**INPUT TEXT:**\n{text}\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"extracted_spans\": [\n        {\n            \"span_id\": 1,\n            \"text\": \"The attackers used spear-phishing emails with malicious PDF attachments containing CVE-2024-21345 exploit code to gain initial access\",\n            \"start_position\": 145,\n            \"end_position\": 287,\n            \"character_length\": 142,\n            \"technique_classification\": {\n                \"primary_technique\": \"T1566.001\",\n                \"technique_name\": \"Spearphishing Attachment\",\n                \"tactic\": \"Initial Access\",\n                \"secondary_techniques\": [\"T1190\"]\n            },\n            \"confidence\": 0.95,\n            \"technical_details\": {\n                \"attack_vector\": \"email_attachment\",\n                \"payload_type\": \"PDF_exploit\",\n                \"vulnerability\": \"CVE-2024-21345\",\n                \"target_access\": \"network_entry\"\n            },\n            \"context\": \"Describes complete initial access chain from delivery to exploitation\"\n        },\n        {\n            \"span_id\": 2,\n            \"text\": \"PowerShell scripts were executed with encoded commands to download and execute additional payloads from the C2 server\",\n            \"start_position\": 412,\n            \"end_position\": 532,\n            \"character_length\": 120,\n            \"technique_classification\": {\n                \"primary_technique\": \"T1059.001\",\n                \"technique_name\": \"PowerShell\",\n                \"tactic\": \"Execution\",\n                \"secondary_techniques\": [\"T1105\", \"T1027\"]\n            },\n            \"confidence\": 0.92,\n            \"technical_details\": {\n                \"execution_method\": \"powershell_scripts\",\n                \"obfuscation\": \"encoded_commands\",\n                \"payload_source\": \"c2_server\",\n                \"action\": \"download_execute\"\n            },\n            \"context\": \"PowerShell-based execution and payload delivery mechanism\"\n        }\n    ],\n    \n    \"extraction_summary\": {\n        \"total_spans_extracted\": 8,\n        \"techniques_identified\": {\n            \"initial_access\": 2,\n            \"execution\": 2,\n            \"persistence\": 1,\n            \"command_control\": 2,\n            \"lateral_movement\": 1\n        },\n        \"mitre_techniques\": [\"T1566.001\", \"T1059.001\", \"T1053\", \"T1071.001\"],\n        \"attack_flow_coverage\": \"comprehensive\",\n        \"span_quality\": \"high\"\n    },\n    \n    \"attack_narrative\": {\n        \"kill_chain_phases\": [\"delivery\", \"exploitation\", \"installation\", \"command_control\"],\n        \"primary_ttp_pattern\": \"phishing_to_powershell_c2\",\n        \"sophistication_level\": \"moderate_to_high\",\n        \"defensive_gaps\": [\"email_filtering\", \"powershell_monitoring\"]\n    }\n}\n```",
+      
+      "temperature": 0.2,
+      "max_tokens": 2048,
+      "validation_criteria": [
+        "All spans have precise character positions",
+        "MITRE ATT&CK techniques correctly identified",
+        "Sufficient technical detail in extracted spans",
+        "Confidence scores reflect span quality"
+      ]
+    },
+
+    "cls_attack_vector": {
+      "operation_name": "Attack Vector Classification",
+      "description": "Classify attack vectors according to CVSS v3.1 standards",
+      "system_prompt": "You are a cybersecurity classification specialist with deep expertise in CVSS v3.1 metrics and vulnerability assessment. You excel at analyzing attack descriptions and determining the precise attack vector classification according to industry standards.",
+      
+      "user_template": "**CLASSIFICATION MISSION:** Analyze the vulnerability or attack description and determine the precise attack vector according to CVSS v3.1 Attack Vector (AV) metric.\n\n**ATTACK DESCRIPTION:** {description}\n\n**CVSS v3.1 ATTACK VECTOR CATEGORIES:**\n\n**NETWORK (AV:N) - Score: 0.85:**\n- **Definition:** Vulnerability exploitable remotely over a network\n- **Requirements:** Network connectivity to vulnerable component\n- **Examples:** Web application vulnerabilities, network protocol flaws, remote code execution\n- **Indicators:** \\\"remote\\\", \\\"network\\\", \\\"HTTP\\\", \\\"TCP\\\", \\\"UDP\\\", \\\"web-based\\\", \\\"internet\\\", \\\"remotely exploitable\\\"\n- **Attack Surface:** Exposed network services, public-facing applications\n\n**ADJACENT NETWORK (AV:A) - Score: 0.62:**\n- **Definition:** Limited to shared physical or logical network segment\n- **Requirements:** Access to local network broadcast/collision domain\n- **Examples:** ARP spoofing, wireless attacks, broadcast protocol exploitation\n- **Indicators:** \\\"wireless\\\", \\\"LAN\\\", \\\"Bluetooth\\\", \\\"adjacent\\\", \\\"local network\\\", \\\"broadcast\\\", \\\"multicast\\\"\n- **Attack Surface:** Local network segments, wireless networks\n\n**LOCAL (AV:L) - Score: 0.55:**\n- **Definition:** Requires local access to target system\n- **Requirements:** Local user account, shell access, or physical console\n- **Examples:** Privilege escalation, local file inclusion, kernel exploits\n- **Indicators:** \\\"local\\\", \\\"privilege escalation\\\", \\\"file system\\\", \\\"shell access\\\", \\\"logged in user\\\", \\\"local execution\\\"\n- **Attack Surface:** Local user interfaces, file systems, local services\n\n**PHYSICAL (AV:P) - Score: 0.20:**\n- **Definition:** Requires physical access to target device\n- **Requirements:** Physical proximity and direct hardware interaction\n- **Examples:** USB attacks, hardware tampering, console access, BIOS manipulation\n- **Indicators:** \\\"physical\\\", \\\"hardware\\\", \\\"USB\\\", \\\"console\\\", \\\"BIOS\\\", \\\"firmware\\\", \\\"direct access\\\"\n- **Attack Surface:** Physical ports, hardware components, boot processes\n\n**CLASSIFICATION METHODOLOGY:**\n\n**1. ACCESS ANALYSIS:**\n- What is the MINIMUM level of access required for exploitation?\n- How close must the attacker be to the target?\n- What network positioning is necessary?\n\n**2. ATTACK SURFACE EVALUATION:**\n- Where is the vulnerability exposed?\n- What interfaces can attackers reach?\n- What protocols or services are involved?\n\n**3. PROXIMITY ASSESSMENT:**\n- Internet-accessible → Network\n- Same network segment → Adjacent Network  \n- Local system access → Local\n- Physical device access → Physical\n\n**4. KEYWORD ANALYSIS:**\n- Scan for technical indicators in description\n- Identify access requirements and constraints\n- Determine minimum attack path complexity\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"classification\": \"network\",\n    \"cvss_notation\": \"AV:N\", \n    \"numeric_score\": 0.85,\n    \"confidence\": 0.92,\n    \n    \"classification_reasoning\": {\n        \"primary_justification\": \"The vulnerability can be exploited remotely over a network connection without requiring local access, physical proximity, or shared network segments. The description indicates remote network exploitation capabilities.\",\n        \"supporting_indicators\": [\"remote\", \"network\", \"HTTP\", \"internet-facing\"],\n        \"access_requirements\": \"network_connectivity_only\",\n        \"minimum_attacker_position\": \"remote_internet_location\"\n    },\n    \n    \"attack_surface_analysis\": {\n        \"exposure_level\": \"public_internet\",\n        \"required_protocols\": [\"TCP\", \"HTTP\"],\n        \"network_boundaries\": \"none\",\n        \"authentication_bypass\": true\n    },\n    \n    \"alternative_classifications\": [\n        {\n            \"classification\": \"adjacent_network\",\n            \"probability\": 0.05,\n            \"reasoning\": \"Could be limited to local network if service not internet-exposed\",\n            \"conditions\": \"if_service_internal_only\"\n        },\n        {\n            \"classification\": \"local\",\n            \"probability\": 0.02,\n            \"reasoning\": \"Possible if exploitation requires local user context\",\n            \"conditions\": \"if_authentication_required\"\n        }\n    ],\n    \n    \"cvss_impact\": {\n        \"exploitability_contribution\": \"high\",\n        \"base_score_influence\": \"increases_severity\",\n        \"threat_landscape\": \"widespread_exploitation_possible\"\n    },\n    \n    \"defensive_considerations\": {\n        \"network_controls\": [\"firewall_rules\", \"network_segmentation\"],\n        \"monitoring_points\": [\"network_traffic\", \"intrusion_detection\"],\n        \"mitigation_priority\": \"critical_due_to_remote_exploitability\"\n    }\n}\n```",
+      
+      "temperature": 0.2,
+      "max_tokens": 1024,
+      "validation_criteria": [
+        "Classification matches CVSS v3.1 standards",
+        "Confidence score reflects certainty",
+        "Supporting evidence clearly identified",
+        "Alternative classifications considered"
+      ]
+    }
+  },
+  
+  "technical_analysis_guidelines": {
+    "span_extraction_best_practices": {
+      "precision_requirements": "Character-level accuracy for span boundaries",
+      "context_preservation": "Include enough context for technique understanding",
+      "mitre_mapping": "Always map to official MITRE ATT&CK technique IDs",
+      "quality_filtering": "Only extract spans with actionable technical detail"
+    },
+    
+    "classification_principles": {
+      "cvss_compliance": "Strictly follow CVSS v3.1 official specifications",
+      "evidence_based": "Use textual indicators to support classifications",
+      "conservative_approach": "When uncertain, choose more restrictive access level",
+      "alternative_consideration": "Always consider alternative classifications"
+    }
+  },
+  
+  "usage_examples": {
+    "spa_example": {
+      "input": "The malware used PowerShell to execute encoded commands and establish persistence through registry modifications",
+      "expected_spans": [
+        {
+          "technique": "T1059.001",
+          "span": "used PowerShell to execute encoded commands"
+        },
+        {
+          "technique": "T1547.001", 
+          "span": "establish persistence through registry modifications"
+        }
+      ]
+    },
+    "cls_example": {
+      "description": "Remote web application vulnerability allowing unauthenticated code execution",
+      "expected_classification": "network",
+      "reasoning": "Remote exploitation over network without authentication requirements"
+    }
+  }
+}

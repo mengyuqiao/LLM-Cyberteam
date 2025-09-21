@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "file": "cyberteam_prompts_part1.json",
+    "version": "1.0",
+    "description": "Entity extraction operations: NER and REX",
+    "operations_included": ["ner_threat_attribution", "rex_extract_indicators"]
+  },
+  
+  "prompt_templates": {
+    
+    "ner_threat_attribution": {
+      "operation_name": "Named Entity Recognition for Threat Attribution",
+      "description": "Extract cybersecurity entities for threat attribution analysis",
+      "system_prompt": "You are a cybersecurity threat intelligence assistant specialized in named entity recognition. Your expertise covers APT groups, malware families, infrastructure indicators, and vulnerability identification. You have extensive knowledge of threat actor naming conventions, MITRE ATT&CK framework, and cybersecurity terminology.",
+      
+      "user_template": "You are conducting threat attribution analysis. Extract and categorize ALL cybersecurity-relevant named entities from the provided text.\n\n**ATTRIBUTION FOCUS:**\n- Who is responsible for the attack?\n- How was the attack carried out?\n- What tools and infrastructure were used?\n\n**ENTITY CATEGORIES:**\n\n1. **THREAT ACTORS** (Confidence: 0.0-1.0):\n   - APT groups (APT1, APT29, Lazarus, etc.)\n   - Cybercriminal groups (FIN7, Carbanak, etc.)\n   - Individual threat actors and aliases\n   - State-sponsored actors\n   - Hacktivist groups\n\n2. **MALWARE/TOOLS**:\n   - Specific malware names and families\n   - Hacking tools and frameworks\n   - Exploit kits and payloads\n   - Living-off-the-land tools\n   - Custom backdoors and implants\n\n3. **VULNERABILITIES**:\n   - CVE identifiers (CVE-YYYY-NNNN)\n   - Vulnerability types and classes\n   - Zero-day exploits\n   - Configuration weaknesses\n\n4. **INFRASTRUCTURE**:\n   - IP addresses (IPv4/IPv6)\n   - Domain names and subdomains\n   - URLs and file paths\n   - Email addresses\n   - File hashes (MD5, SHA1, SHA256)\n   - Certificate details\n   - Network protocols and ports\n\n**EXTRACTION GUIDELINES:**\n- Use contextual analysis to distinguish between legitimate and malicious entities\n- Consider aliases and alternative names for threat actors\n- Include confidence scores based on evidence strength\n- Provide brief context explaining the entity's relevance\n- Extract both explicit mentions and inferred relationships\n\n**INPUT TEXT:**\n{text}\n\n**OUTPUT FORMAT:**\nReturn a JSON object with this exact structure:\n```json\n{\n    \"threat_actors\": [\n        {\n            \"entity\": \"APT29\",\n            \"category\": \"advanced_persistent_threat\",\n            \"confidence\": 0.95,\n            \"context\": \"Directly mentioned as attribution target\",\n            \"aliases\": [\"Cozy Bear\", \"The Dukes\"]\n        }\n    ],\n    \"malware\": [\n        {\n            \"entity\": \"Cobalt Strike\",\n            \"category\": \"post_exploitation_tool\",\n            \"confidence\": 0.9,\n            \"context\": \"Used for lateral movement\",\n            \"family\": \"commercial_tool\"\n        }\n    ],\n    \"vulnerabilities\": [\n        {\n            \"entity\": \"CVE-2024-1234\",\n            \"category\": \"remote_code_execution\",\n            \"confidence\": 0.98,\n            \"context\": \"Initial access vector\",\n            \"cvss_score\": \"9.8\"\n        }\n    ],\n    \"infrastructure\": [\n        {\n            \"entity\": \"185.100.87.21\",\n            \"category\": \"command_control_server\",\n            \"confidence\": 0.9,\n            \"context\": \"Malware communication endpoint\",\n            \"geolocation\": \"Eastern Europe\"\n        }\n    ],\n    \"extraction_summary\": {\n        \"total_entities\": 15,\n        \"high_confidence_entities\": 12,\n        \"attribution_strength\": \"strong\",\n        \"key_indicators\": [\"APT29\", \"CVE-2024-1234\", \"185.100.87.21\"]\n    }\n}\n```",
+      
+      "temperature": 0.2,
+      "max_tokens": 2048,
+      "validation_criteria": [
+        "JSON format compliance",
+        "All confidence scores between 0.0-1.0", 
+        "At least one entity per category if present in text",
+        "Context provided for each entity"
+      ]
+    },
+
+    "rex_extract_indicators": {
+      "operation_name": "Regex Pattern Matching for IOC Extraction",
+      "description": "Extract structured threat indicators using pattern recognition",
+      "system_prompt": "You are a cybersecurity parsing assistant specialized in identifying and extracting threat indicators from unstructured text. You have expert knowledge of indicator formats, network protocols, file systems, and cybersecurity data structures.",
+      
+      "user_template": "**TASK:** Extract ALL structured threat indicators from the provided text using precise pattern recognition.\n\n**INDICATOR TYPES TO EXTRACT:**\n\n**1. IP ADDRESSES:**\n- IPv4: xxx.xxx.xxx.xxx (each octet 0-255)\n- IPv6: standard and compressed formats\n- Include private ranges (10.x.x.x, 192.168.x.x, 172.16-31.x.x)\n- Exclude obviously invalid IPs (e.g., 999.999.999.999)\n\n**2. DOMAIN NAMES:**\n- Valid FQDN format: subdomain.domain.tld\n- Include all TLDs (com, org, net, country codes, new gTLDs)\n- Extract suspicious domains and legitimate domains\n- Include punycode domains if present\n\n**3. FILE HASHES:**\n- MD5: exactly 32 hexadecimal characters\n- SHA1: exactly 40 hexadecimal characters\n- SHA256: exactly 64 hexadecimal characters\n- SHA512: exactly 128 hexadecimal characters\n- Case insensitive matching\n\n**4. URLS:**\n- Complete HTTP/HTTPS URLs with protocols\n- Include query parameters and fragments\n- FTP, FTPS, and other protocol URLs\n- File:// URLs if present\n\n**5. EMAIL ADDRESSES:**\n- Standard format: localpart@domain.tld\n- Include both legitimate and suspicious emails\n- Handle special characters in local part\n\n**6. TIMESTAMPS:**\n- ISO 8601: YYYY-MM-DDTHH:MM:SS[Z]\n- US format: MM/DD/YYYY HH:MM:SS\n- European: DD/MM/YYYY HH:MM:SS\n- Epoch timestamps\n- Syslog timestamps\n- Custom application timestamps\n\n**7. CRYPTOCURRENCY ADDRESSES:**\n- Bitcoin addresses (1xxx, 3xxx, bc1xxx)\n- Ethereum addresses (0x40 hex chars)\n- Monero addresses\n- Other cryptocurrency formats\n\n**8. REGISTRY KEYS:**\n- Windows registry paths\n- Registry value names\n- HKEY_* root keys\n\n**9. FILE PATHS:**\n- Windows paths (C:\\\\, UNC paths)\n- Unix/Linux paths (/home/, /tmp/)\n- Relative paths\n\n**EXTRACTION RULES:**\n- Extract ALL occurrences, including duplicates\n- Maintain original formatting and case\n- Do not validate or normalize extracted values\n- Include context around ambiguous matches\n- Flag potential false positives\n\n**INPUT TEXT:**\n{text}\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"ip_addresses\": {\n        \"ipv4\": [\"192.168.1.1\", \"185.100.87.21\"],\n        \"ipv6\": [\"2001:db8::1\"],\n        \"private\": [\"10.0.0.1\"],\n        \"suspicious\": [\"185.100.87.21\"]\n    },\n    \"domains\": {\n        \"all\": [\"evil-domain.com\", \"google.com\"],\n        \"suspicious\": [\"evil-domain.com\"],\n        \"legitimate\": [\"google.com\"],\n        \"subdomains\": [\"mail.evil-domain.com\"]\n    },\n    \"file_hashes\": {\n        \"md5\": [\"5d41402abc4b2a76b9719d911017c592\"],\n        \"sha1\": [\"da39a3ee5e6b4b0d3255bfef95601890afd80709\"],\n        \"sha256\": [\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"],\n        \"sha512\": []\n    },\n    \"urls\": {\n        \"all\": [\"https://evil-domain.com/payload\"],\n        \"suspicious\": [\"https://evil-domain.com/payload\"],\n        \"legitimate\": []\n    },\n    \"email_addresses\": {\n        \"all\": [\"attacker@evil.com\", \"admin@company.com\"],\n        \"suspicious\": [\"attacker@evil.com\"],\n        \"legitimate\": [\"admin@company.com\"]\n    },\n    \"timestamps\": {\n        \"iso_format\": [\"2024-01-15T14:30:22Z\"],\n        \"us_format\": [\"01/15/2024 02:30:22 PM\"],\n        \"epoch\": [\"1705327822\"],\n        \"syslog\": [\"Jan 15 14:30:22\"]\n    },\n    \"cryptocurrency\": {\n        \"bitcoin\": [\"1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa\"],\n        \"ethereum\": [\"0x742d35Cc6634C0532925a3b8D2740f26a8d8b16a\"]\n    },\n    \"registry_keys\": [\n        \"HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\Microsoft\"\n    ],\n    \"file_paths\": {\n        \"windows\": [\"C:\\\\Windows\\\\System32\\\\cmd.exe\"],\n        \"unix\": [\"/tmp/malware.sh\"],\n        \"unc\": [\"\\\\\\\\server\\\\share\\\\file.exe\"]\n    },\n    \"extraction_stats\": {\n        \"total_indicators\": 25,\n        \"unique_indicators\": 22,\n        \"suspicious_indicators\": 8,\n        \"confidence\": 0.95\n    }\n}\n```",
+      
+      "temperature": 0.1,
+      "max_tokens": 2048,
+      "validation_criteria": [
+        "All extracted values match expected patterns",
+        "No false positives for common words",
+        "Proper categorization of indicators",
+        "Statistics accurately reflect extraction"
+      ]
+    }
+  },
+  
+  "usage_examples": {
+    "ner_example": {
+      "input": "APT29 conducted phishing campaign using CVE-2024-1234 targeting government agencies via malicious.evil-domain.com",
+      "expected_entities": ["APT29", "CVE-2024-1234", "malicious.evil-domain.com", "government agencies"]
+    },
+    "rex_example": {
+      "input": "C2 server at 185.100.87.21 hosted malware with hash da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "expected_indicators": ["185.100.87.21", "da39a3ee5e6b4b0d3255bfef95601890afd80709"]
+    }
+  }
+}

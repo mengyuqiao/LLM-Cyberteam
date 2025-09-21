@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "file": "cyberteam_prompts_part2.json",
+    "version": "1.0",
+    "description": "Analysis operations: SUM and SIM",
+    "operations_included": ["sum_threat_report", "sim_geocultural_match"]
+  },
+  
+  "prompt_templates": {
+    
+    "sum_threat_report": {
+      "operation_name": "Threat Intelligence Summarization",
+      "description": "Generate executive summaries of threat reports preserving critical intelligence",
+      "system_prompt": "You are a senior cybersecurity analyst specializing in threat intelligence summarization. You excel at distilling complex technical reports into actionable executive summaries while preserving all critical details.",
+      
+      "user_template": "**MISSION:** Create a concise executive summary of the threat report that preserves maximum actionable intelligence value.\n\n**SUMMARIZATION PRIORITIES (in order):**\n1. **ATTRIBUTION:** Threat actor identification and confidence level\n2. **ATTACK VECTOR:** Primary and secondary attack methods\n3. **TIMELINE:** Key dates, duration, discovery time\n4. **IMPACT:** Affected systems, data, operations\n5. **INDICATORS:** Critical IOCs for detection/hunting\n6. **TTPS:** Unique techniques and procedures\n7. **VULNERABILITIES:** Exploited weaknesses and CVEs\n8. **MITIGATION:** Immediate response actions needed\n\n**CONTENT REQUIREMENTS:**\n- **LENGTH:** Exactly {max_sentences} sentences\n- **STYLE:** Active voice, precise technical language\n- **SPECIFICITY:** Include numbers, dates, names, technical identifiers\n- **ACTIONABILITY:** Each sentence should inform decision-making\n\n**MANDATORY ELEMENTS (when available):**\n- Threat actor names and aliases\n- Specific CVE numbers\n- File hashes, IP addresses, domains\n- Attack techniques with MITRE ATT&CK IDs\n- Affected software/hardware versions\n- Geographic targets or origins\n- Financial or operational impact metrics\n\n**WRITING STANDARDS:**\n- Use industry terminology correctly\n- Quantify impact where possible\n- Specify confidence levels for attribution\n- Include both technical and business context\n- Avoid speculation and hedge words\n\n**EXCLUSIONS:**\n- Generic cybersecurity advice\n- Background information on known concepts\n- Redundant statements\n- Speculative attribution without evidence\n\n**INPUT TEXT:**\n{text}\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"executive_summary\": \"APT29 conducted a multi-stage spear-phishing campaign from December 10-20, 2024, targeting government organizations across Eastern Europe using CVE-2024-21345 exploitation for initial access. The threat actors deployed custom PowerShell scripts to establish persistence via registry modifications and communicated with C2 infrastructure at 185.100.87.21 and evil-domain.com. File hash a1b2c3d4e5f6789012345678901234567890abcdef was identified as the primary payload, enabling lateral movement and credential harvesting across compromised networks. The campaign demonstrates high operational security with encrypted C2 communications and fileless execution techniques, requiring immediate patching of Exchange servers and network monitoring for identified IOCs.\",\n    \n    \"key_intelligence\": {\n        \"threat_actor\": \"APT29 (Cozy Bear)\",\n        \"attribution_confidence\": \"high\",\n        \"primary_vector\": \"spear-phishing with CVE-2024-21345\",\n        \"campaign_duration\": \"10 days\",\n        \"affected_sectors\": [\"government\", \"defense\"],\n        \"geographic_scope\": \"Eastern Europe\",\n        \"critical_iocs\": [\n            \"185.100.87.21\",\n            \"evil-domain.com\", \n            \"a1b2c3d4e5f6789012345678901234567890abcdef\"\n        ]\n    },\n    \n    \"intelligence_assessment\": {\n        \"severity\": \"high\",\n        \"confidence\": 0.9,\n        \"completeness\": \"comprehensive\",\n        \"actionability\": \"immediate\",\n        \"intelligence_gaps\": [\"additional C2 infrastructure\", \"full victim list\"]\n    },\n    \n    \"summary_metrics\": {\n        \"sentence_count\": 4,\n        \"technical_details_preserved\": 12,\n        \"iocs_included\": 3,\n        \"mitre_techniques\": 2\n    }\n}\n```",
+      
+      "temperature": 0.3,
+      "max_tokens": 1024,
+      "validation_criteria": [
+        "Exact sentence count as requested",
+        "All critical IOCs preserved",
+        "Clear attribution statement",
+        "Actionable intelligence provided"
+      ]
+    },
+
+    "sim_geocultural_match": {
+      "operation_name": "Geocultural Threat Indicator Similarity",
+      "description": "Determine semantic equivalence of geographic/cultural threat attribution indicators",
+      "system_prompt": "You are a cybersecurity geopolitical analyst with expertise in threat actor attribution, cultural linguistics, and international cyber operations. You understand how geographic and cultural terms are used in threat intelligence and can identify semantic equivalence across different naming conventions.",
+      
+      "user_template": "**ANALYSIS MISSION:** Determine if two geocultural indicators refer to the same threat origin in cybersecurity context.\n\n**COMPARISON TARGETS:**\n- **PHRASE 1:** \"{text1}\"\n- **PHRASE 2:** \"{text2}\"\n\n**EVALUATION FRAMEWORK:**\n\n**1. GEOGRAPHIC ANALYSIS:**\n- Do both terms reference the same geographic region?\n- Consider modern and historical boundaries\n- Account for regional groupings and sub-regions\n- Evaluate administrative and cultural borders\n\n**2. POLITICAL CONTEXT:**\n- Do they refer to the same political entity or alliance?\n- Consider current and former political structures\n- Account for independence movements and territorial disputes\n- Evaluate proxy relationships and state sponsorship\n\n**3. CULTURAL/LINGUISTIC EQUIVALENCE:**\n- Do they describe the same cultural or ethnic group?\n- Consider language families and dialects\n- Account for diaspora populations\n- Evaluate cultural spheres of influence\n\n**4. CYBERSECURITY INTELLIGENCE CONVENTIONS:**\n- Are these terms used interchangeably in threat reports?\n- Do they follow standard attribution practices?\n- Consider MITRE ATT&CK group classifications\n- Evaluate common industry usage patterns\n\n**EQUIVALENCE EXAMPLES:**\n- \"Russian\" ≈ \"Russian-speaking\" ≈ \"Post-Soviet\" (context-dependent)\n- \"Chinese\" ≈ \"PRC\" ≈ \"Sino\" (in state-sponsored context)\n- \"North Korean\" ≈ \"DPRK\" ≈ \"Hermit Kingdom\"\n- \"Iranian\" ≈ \"Persian\" (cultural context)\n- \"Eastern European\" ≈ \"Slavic\" (broad regional)\n\n**ANALYSIS QUESTIONS:**\n1. Do both descriptions point to the same cultural, linguistic, or geopolitical region?\n2. Are these expressions used interchangeably in threat intelligence contexts?\n3. Would a cybersecurity analyst consider these equivalent for attribution purposes?\n4. Do they reference the same state, region, or cultural group?\n5. Are there overlapping geographic or political boundaries?\n\n**CONFIDENCE CALIBRATION:**\n- **1.0:** Exact match or universally recognized synonyms\n- **0.8-0.9:** Strong semantic overlap with minor contextual differences\n- **0.6-0.7:** Moderate overlap with some geographic/cultural intersection\n- **0.3-0.5:** Weak overlap with limited common elements\n- **0.0-0.2:** No meaningful relationship or contradictory\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"match\": true,\n    \"confidence\": 0.85,\n    \"justification\": \"Both terms refer to Russian-speaking threat actors commonly associated with Eastern European cybercriminal groups. In threat intelligence, 'Russian-affiliated' and 'Eastern European' are frequently used interchangeably when discussing similar threat actor profiles, operational characteristics, and geographic origins. The terms share significant overlap in cybersecurity attribution contexts.\",\n    \n    \"detailed_analysis\": {\n        \"geographic_overlap\": 0.9,\n        \"political_equivalence\": 0.7,\n        \"cultural_similarity\": 0.8,\n        \"threat_intel_convention\": 0.9\n    },\n    \n    \"supporting_evidence\": [\n        \"Both terms commonly used in APT attribution reports\",\n        \"Geographic regions significantly overlap\",\n        \"Similar threat actor operational patterns\",\n        \"Industry reports treat terms as related\"\n    ],\n    \n    \"semantic_relationship\": \"subset_overlap\",\n    \"attribution_impact\": \"equivalent_for_threat_hunting\",\n    \n    \"alternative_interpretations\": [\n        {\n            \"interpretation\": \"Russian is subset of Eastern European\",\n            \"probability\": 0.8,\n            \"context\": \"Geographic hierarchy perspective\"\n        },\n        {\n            \"interpretation\": \"Terms refer to different actor groups\",\n            \"probability\": 0.1,\n            \"context\": \"Strict geographic interpretation\"\n        }\n    ]\n}\n```",
+      
+      "temperature": 0.4,
+      "max_tokens": 1024,
+      "validation_criteria": [
+        "Confidence score between 0.0-1.0",
+        "Clear justification provided",
+        "Cybersecurity context considered",
+        "Geographic and cultural factors evaluated"
+      ]
+    }
+  },
+  
+  "analysis_guidelines": {
+    "summarization_best_practices": {
+      "executive_focus": "Target C-suite and security leadership understanding",
+      "technical_precision": "Maintain accuracy while ensuring accessibility",
+      "actionable_intelligence": "Every statement should inform decision-making",
+      "temporal_context": "Include timeline information for urgency assessment"
+    },
+    
+    "similarity_matching_principles": {
+      "context_dependency": "Geographic terms may have different meanings in different contexts",
+      "historical_awareness": "Consider historical and political changes",
+      "industry_conventions": "Follow established threat intelligence terminology",
+      "confidence_transparency": "Always indicate uncertainty levels"
+    }
+  },
+  
+  "usage_examples": {
+    "sum_example": {
+      "input": "Long technical report about APT29 campaign with multiple IOCs and detailed TTPs",
+      "output_focus": "4-sentence executive summary with key attribution, methods, and IOCs",
+      "expected_elements": ["threat actor", "attack vector", "timeline", "critical IOCs"]
+    },
+    "sim_example": {
+      "comparison_1": "Russian-affiliated",
+      "comparison_2": "Eastern European",
+      "expected_result": "High similarity (0.8+) due to geographic and cultural overlap in cybersecurity context"
+    }
+  }
+}

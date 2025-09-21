@@ -1,0 +1,183 @@
+{
+  "metadata": {
+    "file": "cyberteam_prompts_part5.json",
+    "version": "1.0",
+    "description": "Mathematical operations and system configuration",
+    "operations_included": ["math_cvss_score"],
+    "configuration_included": ["prompt_engineering_guidelines", "model_compatibility", "usage_examples"]
+  },
+  
+  "prompt_templates": {
+    
+    "math_cvss_score": {
+      "operation_name": "CVSS v3.1 Base Score Calculation",
+      "description": "Calculate precise CVSS Base Score using official formulas",
+      "system_prompt": "You are a cybersecurity scoring specialist with expert knowledge of CVSS v3.1 mathematical formulas and vulnerability assessment. You excel at performing precise calculations according to official CVSS standards and can explain each step of the mathematical process.",
+      
+      "user_template": "**CVSS v3.1 CALCULATION MISSION:** Calculate the precise CVSS Base Score using the official CVSS v3.1 mathematical formulas with the provided metric values.\n\n**INPUT METRICS:**\n- **Confidentiality Impact:** {confidentiality_impact}\n- **Integrity Impact:** {integrity_impact}\n- **Availability Impact:** {availability_impact}\n- **Attack Vector:** {attack_vector}\n- **Attack Complexity:** {attack_complexity}\n- **Privileges Required:** {privileges_required}\n- **User Interaction:** {user_interaction}\n- **Scope:** {scope}\n\n**CVSS v3.1 METRIC VALUE MAPPINGS:**\n\n**Attack Vector (AV):**\n- Network (N): 0.85\n- Adjacent Network (A): 0.62\n- Local (L): 0.55\n- Physical (P): 0.20\n\n**Attack Complexity (AC):**\n- Low (L): 0.77\n- High (H): 0.44\n\n**Privileges Required (PR):**\n- None (N): 0.85\n- Low (L): 0.68 (Changed Scope) / 0.62 (Unchanged Scope)\n- High (H): 0.50 (Changed Scope) / 0.27 (Unchanged Scope)\n\n**User Interaction (UI):**\n- None (N): 0.85\n- Required (R): 0.62\n\n**Confidentiality Impact (C):**\n- None (N): 0.0\n- Low (L): 0.22\n- High (H): 0.56\n\n**Integrity Impact (I):**\n- None (N): 0.0\n- Low (L): 0.22\n- High (H): 0.56\n\n**Availability Impact (A):**\n- None (N): 0.0\n- Low (L): 0.22\n- High (H): 0.56\n\n**OFFICIAL CVSS v3.1 CALCULATION FORMULAS:**\n\n**Step 1: Calculate Impact Sub-score Base (ISCBase)**\n```\nISCBase = 1 - ((1 - C) × (1 - I) × (1 - A))\n```\n\n**Step 2: Calculate Impact Sub-score**\n```\nIf Scope = Unchanged:\n    Impact = 6.42 × ISCBase\n\nIf Scope = Changed:\n    Impact = 7.52 × (ISCBase - 0.029) - 3.25 × (ISCBase - 0.02)^15\n```\n\n**Step 3: Calculate Exploitability Sub-score**\n```\nExploitability = 8.22 × AV × AC × PR × UI\n```\n\n**Step 4: Calculate Base Score**\n```\nIf Impact ≤ 0:\n    Base Score = 0.0\n\nIf Scope = Unchanged:\n    Base Score = Round Up(min(Impact + Exploitability, 10.0))\n\nIf Scope = Changed:\n    Base Score = Round Up(min(1.08 × (Impact + Exploitability), 10.0))\n```\n\n**Step 5: Determine Severity Rating**\n- 0.0: None\n- 0.1-3.9: Low\n- 4.0-6.9: Medium\n- 7.0-8.9: High\n- 9.0-10.0: Critical\n\n**CALCULATION REQUIREMENTS:**\n- Use exact metric values from official CVSS v3.1 specification\n- Show all intermediate calculations with full precision\n- Round Base Score UP to one decimal place using ceiling function\n- Validate against official CVSS calculator logic\n- Include CVSS vector string notation\n\n**OUTPUT FORMAT:**\n```json\n{\n    \"cvss_calculation\": {\n        \"base_score\": 9.7,\n        \"severity_rating\": \"Critical\",\n        \"cvss_vector\": \"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H\"\n    },\n    \n    \"metric_values\": {\n        \"attack_vector\": 0.85,\n        \"attack_complexity\": 0.77,\n        \"privileges_required\": 0.85,\n        \"user_interaction\": 0.85,\n        \"confidentiality_impact\": 0.56,\n        \"integrity_impact\": 0.56,\n        \"availability_impact\": 0.56,\n        \"scope\": \"unchanged\"\n    },\n    \n    \"calculation_steps\": [\n        {\n            \"step\": 1,\n            \"description\": \"Calculate ISCBase\",\n            \"formula\": \"ISCBase = 1 - ((1 - 0.56) × (1 - 0.56) × (1 - 0.56))\",\n            \"calculation\": \"ISCBase = 1 - (0.44 × 0.44 × 0.44) = 1 - 0.085184 = 0.914816\",\n            \"result\": 0.914816\n        },\n        {\n            \"step\": 2,\n            \"description\": \"Calculate Impact Sub-score\",\n            \"formula\": \"Impact = 6.42 × ISCBase\",\n            \"calculation\": \"Impact = 6.42 × 0.914816 = 5.873116\",\n            \"result\": 5.873116\n        },\n        {\n            \"step\": 3,\n            \"description\": \"Calculate Exploitability Sub-score\",\n            \"formula\": \"Exploitability = 8.22 × AV × AC × PR × UI\",\n            \"calculation\": \"Exploitability = 8.22 × 0.85 × 0.77 × 0.85 × 0.85 = 3.778729\",\n            \"result\": 3.778729\n        },\n        {\n            \"step\": 4,\n            \"description\": \"Calculate Base Score\",\n            \"formula\": \"Base Score = Round Up(min(Impact + Exploitability, 10.0))\",\n            \"calculation\": \"Base Score = Round Up(min(5.873116 + 3.778729, 10.0)) = Round Up(9.651845) = 9.7\",\n            \"result\": 9.7\n        }\n    ],\n    \n    \"sub_scores\": {\n        \"impact_subscore\": 5.9,\n        \"exploitability_subscore\": 3.8,\n        \"isc_base\": 0.91\n    },\n    \n    \"validation\": {\n        \"calculation_verified\": true,\n        \"formula_compliance\": \"CVSS v3.1 official specification\",\n        \"rounding_method\": \"ceiling_function\",\n        \"precision_maintained\": \"full_precision_until_final_round\"\n    },\n    \n    \"risk_assessment\": {\n        \"severity_category\": \"Critical\",\n        \"exploitability_level\": \"high\",\n        \"impact_level\": \"high\",\n        \"overall_risk\": \"immediate_patching_required\",\n        \"cvss_percentile\": \"top_5_percent\"\n    },\n    \n    \"calculation_metadata\": {\n        \"cvss_version\": \"3.1\",\n        \"calculation_timestamp\": \"2024-12-19T12:00:00Z\",\n        \"calculator_compliance\": \"official_cvss_specification\",\n        \"confidence\": 1.0\n    }\n}\n```\n\n**CRITICAL REQUIREMENTS:**\n- Perform calculations with full mathematical precision\n- Use ceiling function for final Base Score rounding\n- Validate each step against official CVSS specification\n- Include complete audit trail of calculations\n- Generate proper CVSS vector string notation",
+      
+      "temperature": 0.1,
+      "max_tokens": 1536,
+      "validation_criteria": [
+        "All calculations mathematically correct",
+        "Proper rounding applied only to final score",
+        "CVSS vector string correctly formatted",
+        "Severity rating matches score range"
+      ]
+    }
+  },
+  
+  "prompt_engineering_guidelines": {
+    "temperature_recommendations": {
+      "factual_extraction": 0.1,
+      "classification_tasks": 0.2,
+      "creative_analysis": 0.4,
+      "general_operations": 0.3
+    },
+    
+    "token_limits": {
+      "simple_extraction": 1024,
+      "complex_analysis": 2048,
+      "comprehensive_reports": 4096
+    },
+    
+    "output_validation": {
+      "json_format_required": true,
+      "confidence_scores_mandatory": true,
+      "evidence_citations_required": true,
+      "mitre_mappings_when_applicable": true
+    },
+    
+    "error_handling": {
+      "fallback_responses": "provide partial results with confidence indicators",
+      "validation_failures": "return error explanation with attempted extraction",
+      "insufficient_data": "indicate data gaps and request additional input"
+    }
+  },
+  
+  "model_compatibility": {
+    "gpt_4": {
+      "recommended_temperature": 0.3,
+      "max_tokens": 4096,
+      "special_instructions": "Use advanced reasoning capabilities for complex relationship extraction",
+      "strengths": ["complex analysis", "multi-step reasoning", "json compliance"],
+      "limitations": ["potential verbosity", "occasional hallucination"]
+    },
+    "claude_3": {
+      "recommended_temperature": 0.2,
+      "max_tokens": 4096,
+      "special_instructions": "Leverage strong analytical capabilities for technical precision",
+      "strengths": ["technical accuracy", "structured output", "safety compliance"],
+      "limitations": ["conservative responses", "limited creativity"]
+    },
+    "gemini_pro": {
+      "recommended_temperature": 0.25,
+      "max_tokens": 2048,
+      "special_instructions": "Focus on structured output and clear reasoning chains",
+      "strengths": ["factual accuracy", "logical reasoning", "conciseness"],
+      "limitations": ["shorter context window", "less creative analysis"]
+    }
+  },
+  
+  "usage_examples": {
+    "function_chaining": {
+      "description": "Use output from one operation as input to another",
+      "example": "NER entities → MAP relationships → RAG queries",
+      "benefits": ["enriched analysis", "cross-validation", "comprehensive intelligence"]
+    },
+    
+    "confidence_thresholding": {
+      "description": "Filter results based on confidence scores",
+      "high_precision": "≥0.8 confidence for critical operations",
+      "medium_precision": "≥0.6 confidence for general analysis",
+      "low_precision": "≥0.4 confidence for exploratory tasks"
+    },
+    
+    "iterative_refinement": {
+      "description": "Use initial results to refine subsequent operations",
+      "process": [
+        "1. Initial broad extraction",
+        "2. Analyze confidence patterns",
+        "3. Refine prompts for low-confidence areas",
+        "4. Re-run with targeted parameters"
+      ]
+    },
+    
+    "multi_model_validation": {
+      "description": "Compare results across different LLM providers",
+      "strategy": "Run critical operations on multiple models and compare outputs",
+      "consensus_threshold": "≥70% agreement for high-confidence attribution"
+    }
+  },
+  
+  "quality_assurance": {
+    "output_validation_checklist": [
+      "JSON format compliance",
+      "Required fields present",
+      "Confidence scores in valid range (0.0-1.0)",
+      "Evidence citations provided",
+      "Technical identifiers correctly formatted",
+      "MITRE ATT&CK mappings accurate",
+      "Temporal information properly structured"
+    ],
+    
+    "performance_metrics": {
+      "accuracy_targets": {
+        "entity_extraction": "≥90% precision, ≥85% recall",
+        "classification_tasks": "≥85% accuracy",
+        "relationship_extraction": "≥80% precision",
+        "mathematical_calculations": "100% accuracy"
+      },
+      
+      "latency_targets": {
+        "simple_operations": "<5 seconds",
+        "complex_analysis": "<15 seconds",
+        "comprehensive_reports": "<30 seconds"
+      }
+    }
+  },
+  
+  "deployment_considerations": {
+    "security_requirements": {
+      "data_handling": "No sensitive data in prompts or logs",
+      "access_control": "Role-based access to different operation types",
+      "audit_logging": "Complete operation audit trail required",
+      "privacy_protection": "PII detection and redaction mandatory"
+    },
+    
+    "scalability_planning": {
+      "concurrent_operations": "Support for parallel execution",
+      "rate_limiting": "Implement per-user and per-operation limits",
+      "caching_strategy": "Cache frequent queries and results",
+      "load_balancing": "Distribute across multiple LLM providers"
+    },
+    
+    "monitoring_requirements": {
+      "operation_success_rates": "Track success/failure by operation type",
+      "confidence_score_distributions": "Monitor confidence patterns",
+      "performance_degradation": "Alert on accuracy or latency decline",
+      "usage_patterns": "Analyze operation frequency and combinations"
+    }
+  },
+  
+  "integration_guidance": {
+    "api_endpoints": {
+      "single_operation": "/api/v1/cyberteam/{operation_name}",
+      "batch_processing": "/api/v1/cyberteam/batch",
+      "pipeline_execution": "/api/v1/cyberteam/pipeline"
+    },
+    
+    "response_formats": {
+      "success": "Standard JSON with operation results and metadata",
+      "error": "Error object with code, message, and recovery suggestions",
+      "partial": "Partial results with confidence indicators and gaps"
+    },
+    
+    "best_practices": {
+      "prompt_optimization": "Test prompts with representative data before deployment",
+      "result_validation": "Implement automated validation for critical outputs",
+      "fallback_strategies": "Define graceful degradation for operation failures",
+      "performance_monitoring": "Track operation latency and accuracy metrics"
+    }
+  }
+}
