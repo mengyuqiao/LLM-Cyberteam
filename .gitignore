@@ -1,0 +1,12 @@
+__pycache__/
+data/cve_ref*
+data/cve_report/
+data/finetune/
+data/organization/
+data/gen_corpus/
+data_code/
+*.log
+keyword_match_cvss/
+har_and_cookies/
+epss_prediction/
+*.ipynb
