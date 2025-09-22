@@ -83,8 +83,7 @@ Key sources include:
   - [CWE](https://cwe.mitre.org/)  
 - [NVD (National Vulnerability Database)](https://nvd.nist.gov/)  
 - [Exploit-DB](https://www.exploit-db.com/)  
-- [VulDB](https://vuldb.com/)  
-- [CISE Security Database](https://www.cise.aic.sg/)  
+- [VulDB](https://vuldb.com/)   
 - Vendor advisories:  
   - [Red Hat Bugzilla](https://bugzilla.redhat.com/)  
   - [Oracle Security Advisories](https://www.oracle.com/security-alerts/)  
@@ -104,7 +103,7 @@ The evaluation spans **state-of-the-art general-purpose LLMs** and **domain-spec
   - OpenAI: [GPT-4o](https://openai.com/index/hello-gpt-4o/) · [GPT-o3](https://platform.openai.com/docs/models#gpt-3-5)  
   - Google: [Gemini-Pro](https://deepmind.google/technologies/gemini/)  
   - Anthropic: [Claude-3 (Opus)](https://www.anthropic.com/news/claude-3-family)  
-  - Meta: [LLaMA 3.1–405B](https://ai.meta.com/research/publications/llama-3/) · [LLaMA 3.2–90B](https://ai.meta.com/research/publications/llama-3/)  
+  - Meta: [Llama 3.1–405B](https://ai.meta.com/blog/meta-llama-3-1/)  
   - Alibaba: [Qwen3-32B](https://qwenlm.github.io/)  
   - [DeepSeek-V3](https://www.deepseek.com/)  
 
@@ -121,10 +120,10 @@ These models range from **ultra-large generalist LLMs** to **compact cybersecuri
 
 CYBERTEAM builds upon and extends prior LLM benchmarks in cybersecurity and software engineering:
 
-- **[CTIBench (Alam et al., 2024)](https://arxiv.org/abs/2403.18915)** — Focuses on Cyber Threat Intelligence with ~2.5k samples and 3 tasks, mainly multiple-choice.  
-- **[SevenLLM-Bench (Ji et al., 2024)](https://arxiv.org/abs/2407.07928)** — ~91k synthetic bilingual instructions for intelligence report understanding, with 28 tasks.  
-- **[SWE-Bench (Jimenez et al., 2023)](https://arxiv.org/abs/2310.06770)** — ~2.2k samples across 12 tasks, targeting software bug fixing based on GitHub issues.  
-- **[CWE-Bench-Java (Li et al., 2025)](https://arxiv.org/abs/2502.06753)** — Java vulnerability detection benchmark covering CWE categories.  
+- **CTIBench (Alam et al., 2024)** — [arXiv:2406.07599](https://arxiv.org/abs/2406.07599)  
+- **SEvenLLM-Bench (Ji et al., 2024)** — [arXiv:2405.03446](https://arxiv.org/abs/2405.03446)  
+- **CWE-Bench-Java (Li et al., 2024)** — [arXiv:2405.17238](https://arxiv.org/abs/2405.17238) · [Dataset repo](https://github.com/iris-sast/cwe-bench-java)  
+- **SWE-bench (Jimenez et al., 2023)** — [arXiv:2310.06770](https://arxiv.org/abs/2310.06770) 
 
 Compared with these, **CYBERTEAM** is distinguished by:  
 - Covering the **full threat hunting lifecycle** (30 tasks across attribution, analysis, prioritization, mitigation).  
