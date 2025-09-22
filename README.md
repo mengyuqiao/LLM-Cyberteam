@@ -60,14 +60,25 @@ These modular calls ensure outputs are **traceable**, **structured**, and **doma
 
 ## 🧱 Modules
 
-The repository is organized into the following core directories:
+The repository is organized into the following core directories and files:
 
-- `crawl/` – Multi-stage CVE crawling and enrichment pipeline.
-- `data/` – Intermediate and processed datasets for training & evaluation.
-- `prompt/` – Prompt templates for various LLM reasoning tasks.
-- `src/` – Core implementation of the LLM reasoning and inference pipeline.
+- `crawl/` – Multi-stage CVE crawling and enrichment pipeline.  
+- `data/` – Intermediate and processed datasets for training & evaluation.  
+- `figures/` – Figures used in documentation (e.g., README.md).  
+- `prompt/` – Contains the **prompt templates** used for different tasks.    
+- `src/` – Contains the main **inference modules**.    
+- `.gitignore` – Standard git ignore configuration.  
+- `README.md` – Project documentation.  
 
 Each module reflects a key component in the LLM-driven threat hunting workflow—from raw data collection to structured reasoning and evaluation.
+
+---
+
+## 🚀 Guide
+
+
+We will disclose the **full running guide** upon acceptance to a vendor.  
+
 
 
 ---
