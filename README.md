@@ -1,8 +1,6 @@
 # 🛡️ CYBERTEAM: Benchmarking LLM-Assisted Blue Teaming via Standardized Threat Hunting
 
 > A Unified Framework for Large Language Model-Driven Cyber Threat Intelligence (CTI) Collaboration and Analysis
-> This repository accompanies our ICLR 2026 paper:  
-> **"Benchmarking LLM-Assisted Blue Teaming via Standardized Threat Hunting"**
 
 ## 🔍 Overview
 
@@ -122,12 +120,12 @@ The evaluation spans **state-of-the-art general-purpose LLMs** and **domain-spec
   - OpenAI: [GPT-4o](https://openai.com/index/hello-gpt-4o/) · [GPT-o3](https://platform.openai.com/docs/models#gpt-3-5)  
   - Google: [Gemini-Pro](https://deepmind.google/technologies/gemini/)  
   - Anthropic: [Claude-3 (Opus)](https://www.anthropic.com/news/claude-3-family)  
-  - Meta: [Llama 3.1–405B](https://ai.meta.com/blog/meta-llama-3-1/)  
+  - Meta: [Llama 3.1–405B](https://ai.meta.com/blog/meta-llama-3-1/), [Llama-4-Scout-17B](https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E) 
   - Alibaba: [Qwen3-32B](https://qwenlm.github.io/)  
   - [DeepSeek-V3](https://www.deepseek.com/)  
 
 - **Security-specialized LLMs**  
-  - **CyLens-8B** (Liu et al., 2025) – research model, paper reference only  
+  - **DeepHat-7B**(Hugging Face, 2025.) - Deephat-v1-7b
   - **Lily-Cybersecurity-7B** (Segolily Lab) – domain-tuned security model  
   - **SevenLLM-7B** (Ji et al., 2024) – cybersecurity benchmark-driven model  
 
