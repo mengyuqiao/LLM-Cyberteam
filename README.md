@@ -80,6 +80,14 @@ Each module reflects a key component in the LLM-driven threat hunting workflowâ€
 We will disclose the **full running guide** upon acceptance to a vendor.  
 
 
+---
+
+## ðŸ“ˆ Performance
+
+**CYBERTEAM** demonstrates that **standardized, function-guided workflows** consistently outperform open-ended prompting and baseline prompting strategies across diverse blue-team tasks.
+
+![CYBERTEAM Performance](figures/performance.png)
+
 
 ---
 
